@@ -1,3 +1,5 @@
+pub mod http;
+
 use std::{error::Error, fs::File};
 
 use serde::{Deserialize, Serialize};

@@ -1,10 +1,12 @@
 extern crate dotenv;
 
 use dotenv::dotenv;
-use serde_json::Value;
 use std::{env, error::Error};
 
-use mixmax_csv_uploader::{parse_people, Recipient, RecipientVariables, RequestBody};
+use mixmax_csv_uploader::{
+    http::{self, Empty, SendRequest},
+    parse_people, Recipient, RecipientVariables, RequestBody,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -34,18 +36,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         mixmax_csv_uploader::MIX_MAX_SEQUENCE_RECIPIENTS_URL.replace(":id", &sequence_id);
     println!("Full URL: {full_url}");
 
-    // Send Request
-    let client = reqwest::Client::new();
-    let res = client
-        .post(full_url)
-        .header("X-API-TOKEN", api_key)
-        .json(&body)
-        .send()
-        .await?;
-
-    println!("The status is {}", res.status());
-
-    let res_body: Value = res.json().await?;
+    // Send request via HTTP to MixMax
+    let sender = http::Requester::<Empty>::new(api_key, full_url);
+    let res_body = sender.send_request(body).await;
     println!("{res_body:?}");
 
     Ok(())
