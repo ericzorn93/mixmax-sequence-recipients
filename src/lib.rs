@@ -1,3 +1,5 @@
+pub mod cli;
+pub mod errors;
 pub mod http;
 
 use std::{error::Error, fs::File};
@@ -77,7 +79,7 @@ impl From<Person> for RecipientVariables {
     }
 }
 
-pub fn parse_people(csv_reader: &mut csv::Reader<File>) -> Result<Vec<Person>, Box<dyn Error>> {
+pub fn parse_people(mut csv_reader: csv::Reader<File>) -> Result<Vec<Person>, Box<dyn Error>> {
     let people: Vec<Person> = csv_reader.deserialize().collect::<Result<_, _>>()?;
     let people = people
         .into_iter()
