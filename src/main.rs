@@ -52,15 +52,13 @@ async fn run() -> Result<(), CLIError> {
 
     // Print recepients
     for receipient in &res_body.recipients {
-        let mut error_count: usize = 0;
-
-        if let Some(errors) = &receipient.errors {
-            error_count = errors.len();
-        }
+        let errors = receipient.errors.as_deref().unwrap_or(&[]);
 
         println!(
             "Email: {} - Status {} - Error Count: {}",
-            receipient.email, receipient.status, error_count
+            receipient.email,
+            receipient.status,
+            errors.len()
         );
     }
 
