@@ -31,16 +31,18 @@ pub struct Person {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RequestBody {
     pub recipients: Vec<Recipient>,
     #[serde(rename = "scheduledAt")]
-    pub scheduled_at: bool,
+    pub scheduled_at: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct RecipientResponse {
     pub email: String,
     pub status: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<String>>,
 }
 

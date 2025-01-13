@@ -43,8 +43,9 @@ async fn run() -> Result<(), CLIError> {
                 variables: RecipientVariables::from(p.clone()),
             })
             .collect::<Vec<Recipient>>(),
-        scheduled_at: false,
+        scheduled_at: if args.draft_mode { Some(false) } else { None },
     };
+
     let res_body = sender
         .send_request(body)
         .await

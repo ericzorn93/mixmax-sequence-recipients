@@ -13,6 +13,10 @@ pub struct Args {
     /// Sequence ID for the MixMax Sequence to append names to
     #[arg(short, long)]
     pub sequence_id: String,
+
+    /// Draft mode will ensure that we will not add the contact to be contacted immediately
+    #[arg(short, long)]
+    pub draft_mode: bool,
 }
 
 impl Args {
