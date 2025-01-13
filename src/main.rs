@@ -49,7 +49,20 @@ async fn run() -> Result<(), CLIError> {
         .send_request(body)
         .await
         .map_err(|_| CLIError::HTTP)?;
-    println!("{res_body:?}");
+
+    // Print recepients
+    for receipient in &res_body.recipients {
+        let mut error_count: usize = 0;
+
+        if let Some(errors) = &receipient.errors {
+            error_count = errors.len();
+        }
+
+        println!(
+            "Email: {} - Status {} - Error Count: {}",
+            receipient.email, receipient.status, error_count
+        );
+    }
 
     Ok(())
 }

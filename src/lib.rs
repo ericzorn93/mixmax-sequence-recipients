@@ -37,6 +37,18 @@ pub struct RequestBody {
     pub scheduled_at: bool,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct RecipientResponse {
+    pub email: String,
+    pub status: String,
+    pub errors: Option<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ResponseBody {
+    pub recipients: Vec<RecipientResponse>,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct Recipient {
     #[serde(rename = "email")]

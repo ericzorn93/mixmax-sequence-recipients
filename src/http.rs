@@ -1,7 +1,9 @@
 use async_trait::async_trait;
 use serde::Serialize;
-use serde_json::Value;
 use std::marker::PhantomData;
+
+use crate::errors::CLIError;
+use crate::ResponseBody;
 
 /// Empty State controlling the requester
 pub struct Empty;
@@ -15,7 +17,7 @@ pub trait SendRequest {
     async fn send_request(
         &self,
         body: impl Serialize + Send + 'static,
-    ) -> Result<Self::Response, Box<dyn std::error::Error + Send + Sync>>;
+    ) -> Result<Self::Response, CLIError>;
 }
 
 pub struct Requester<T> {
@@ -36,12 +38,12 @@ impl<T> Requester<T> {
 
 #[async_trait]
 impl SendRequest for Requester<WithConfig> {
-    type Response = Value;
+    type Response = ResponseBody;
 
     async fn send_request(
         &self,
         body: impl Serialize + Send + 'static,
-    ) -> Result<Self::Response, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> Result<Self::Response, CLIError> {
         // Send Request
         let client = reqwest::Client::new();
         let res = client
@@ -49,11 +51,12 @@ impl SendRequest for Requester<WithConfig> {
             .header("X-API-TOKEN", &self.api_key)
             .json(&body)
             .send()
-            .await?;
+            .await
+            .map_err(|_| CLIError::HTTP)?;
 
         println!("The status is {}", res.status());
 
-        let res_body: Value = res.json().await?;
+        let res_body: ResponseBody = res.json().await.map_err(|_| CLIError::HTTP)?;
         Ok(res_body)
     }
 }
