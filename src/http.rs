@@ -55,6 +55,9 @@ impl SendRequest for Requester<WithConfig> {
             .map_err(|_| CLIError::HTTP)?;
 
         println!("The status is {}", res.status());
+        if res.status().is_client_error() || res.status().is_server_error() {
+            return Err(CLIError::HTTP);
+        }
 
         let res_body: ResponseBody = res.json().await.map_err(|_| CLIError::HTTP)?;
         Ok(res_body)
