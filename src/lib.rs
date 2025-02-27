@@ -20,13 +20,18 @@ pub struct Person {
     #[serde(rename = "Company Name")]
     pub company_name: String,
 
-    #[serde(rename = "Job Title")]
+    #[serde(rename = "Job Title", alias = "Prospect Position", alias = "Job Title")]
     pub job_title: String,
 
-    #[serde(rename = "Email")]
+    #[serde(rename = "Email", alias = "Evaboot Email", alias = "Email")]
     pub email_address: String,
 
-    #[serde(rename = "LinkedIn URL")]
+    #[serde(
+        rename = "LinkedIn URL",
+        alias = "Prospect Linkedin URL",
+        alias = "LinkedIn URL",
+        alias = "Linkedin URL"
+    )]
     pub linkedin_url: String,
 }
 
